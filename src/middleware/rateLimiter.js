@@ -31,23 +31,23 @@ const checkLimit = async function (userId) {
 
   if (user) {
     user = user._doc
-    let userTier = user.tier.type
-    let tier = getTier({ type: userTier })
+    let userTier = user.tier
+    let tier = await getTier({ name: userTier })
     let limit = user.usage
 
     // If the request is made within a valid request window, validate the number of tokens left based on the user tier
-    if (isValidRequestWindow) {
+    if (isValidRequestWindow(limit.windowStart, limit.windowEnd)) {
       // if there are no tokens left then the rate limit has been reached
       if (limit.tokenCount > tier.limit) {
         throw new Error('Too Many Requests');
       }
       // Consume a token for the user
-      const valueToUpdate = limit.tokenCount
-      findAndModifyUser({ _id: user._id }, { valueToUpdate: valueToUpdate + 1 }, false)
+      const valueToUpdate = limit.tokenCount + 1
+      findAndModifyUser({ _id: user._id }, { 'usage.tokenCount' : valueToUpdate }, false)
     } else {
       // Else, reset request window based on current time
       let limit = setLimit(tier)
-      findAndModifyUser({ _id: user._id }, { limit }, false)
+      findAndModifyUser({ _id: user._id }, { 'usage': limit }, false)
     }
   }
 };
@@ -65,11 +65,11 @@ const isValidRequestWindow = (windowStart, windowEnd) => {
  * @returns 
  */
 const setLimit = (tier) => {
-  const windowStart = Date().now
+  const winStart = new Date()
   const limit = {
-    windowStart: windowStart,
-    windowEnd: new Date(windowStart).getSeconds() + tier.windowPeriodInSeconds,
-    limit: tier.limit
+    windowStart: winStart,
+    windowEnd: new Date(new Date(winStart).setSeconds(winStart.getSeconds() + tier.windowPeriodInSeconds)),
+    tokenCount: 1
   }
   return limit
 }
