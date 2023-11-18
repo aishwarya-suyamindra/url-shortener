@@ -19,13 +19,13 @@ const authenticateToken = (req, res, next) => {
     jwt.verify(token, process.env.TOKEN_SECRET, (error, user) => {
         if (error) {
             if (error.name === 'TokenExpiredError') {
-                return res.sendStatus(403).json("Looks like your token has expired, please generate a new token using the /token endpoint")
+                return res.sendStatus(403).send("Looks like your token has expired, please generate a new token using the /token endpoint")
             }
             return res.sendStatus(403)
         }
 
-        if (!userService(repository).isRegisteredUser(user)) {
-            return res.sendStatus(403).json("Please register first!")
+        if (!userService(repository).isRegisteredUser(user.id)) {
+            return res.sendStatus(403).send("Please register first!")
         }
         req.user = user
         next()

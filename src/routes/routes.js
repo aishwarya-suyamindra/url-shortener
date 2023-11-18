@@ -23,6 +23,7 @@ function AppRoutes(app) {
     
     app.get('/history', authenticateToken, validateLimit, (req, res) => {
         // TODO.
+        res.status(200).send("History!!!")
     })
 }
 

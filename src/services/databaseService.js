@@ -32,7 +32,11 @@ const getTiers = async() => {
  * @returns the tier
  */
 const getTier = async(predicate) => {
-  return await Tier.findOne(predicate)
+  try {
+    return await Tier.findOne(predicate)
+  } catch(error) {
+    console.log(error)
+  }
 }
 
 /**
@@ -42,6 +46,7 @@ const getTier = async(predicate) => {
  * @returns the user
  */
 const getUser = async(predicate) => {
+  // return await User.findOne(predicate).populate('usage')
   return await User.findOne(predicate)
 }
 
@@ -64,7 +69,7 @@ const createUser = async(user) => {
  * @returns 
  */
 const findAndModifyUser = async(predicate, valuesToUpdate, upsert) => {
-  return await User.findAndModify({query: predicate}, {update: valuesToUpdate}, {upsert: upsert})
+  return await User.findOneAndUpdate(predicate, {$set: valuesToUpdate})
 }
 
 

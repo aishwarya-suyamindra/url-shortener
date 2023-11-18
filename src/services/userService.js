@@ -11,14 +11,14 @@ const userService = (userRepository) => {
      */
 
     const functions = {
-        isRegisteredUser: async(email) => {
-            const user = await userRepository.getUser({email: email})
+        isRegisteredUser: async(userId) => {
+            const user = await userRepository.getUser({_id: userId})
             return user ? true : false
         },
 
         signUp: async(email) => {
             try {
-                const user = await userRepository.getUser({email: email})
+                var user = await userRepository.getUser({email: email})
                 if (!user) {
                     // The new user is registered under tier 4 by default
                     // TODO: Make the tier configurable
