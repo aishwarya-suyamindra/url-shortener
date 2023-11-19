@@ -1,6 +1,12 @@
 import createToken from "../util/authUtil.js";
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Helper functions to register the user.
+ * 
+ * @param {} repository the repository layer to use
+ * @returns 
+ */
 const userService = (repository) => {
     const functions = {
         /**
@@ -25,20 +31,18 @@ const userService = (repository) => {
             try {
                 var user = await repository.getUser({ email: email })
                 if (!user) {
-                    // The new user is registered under tier 4 by default
+                    // A new user is registered under tier 4 by default
                     // TODO: Make the tier configurable
                     const tier = await repository.getTier({ name: "Tier 4" })
+                    const tierID = tier._id
                     const date = new Date()
-                    user = await repository.createUser({
-                        _id: uuidv4(),
-                        email: email,
-                        tier: "Tier 4",
-                        usage: {
-                            windowStart: date,
-                            windowEnd: new Date(new Date(date).setSeconds(date.getSeconds() + tier._doc.windowPeriodInSeconds)), //date.getSeconds() + tier._doc.windowPeriodInSeconds,
-                            tokenCount: 0
-                        }
-                    });
+                    const id = uuidv4()
+                    const usage = {
+                        windowStart: date,
+                        windowEnd: new Date(new Date(date).setSeconds(date.getSeconds() + tier._doc.windowPeriodInSeconds))
+                    }
+                    const userDoc = repository.createUserDocument({ id, email,tierID, usage})
+                    user = await repository.saveUser(userDoc)
                 }
                 const userId = user._doc._id
                 const token = createToken(userId, process.env.TOKEN_SECRET)

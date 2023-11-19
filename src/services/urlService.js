@@ -2,14 +2,21 @@ import { nanoid } from 'nanoid';
 
 /**
  * 
- * Functions to shorten and work with shortened urls.
+ * Helper functions to shorten and work with shortened urls.
  * 
- * @param {} repository 
- * @returns 
+ * @param {} repository the repository layer to use
+ * @returns
  */
 function urlService(repository) {
     const baseURL = process.env.BASE_URL
     const functions = {
+        /**
+         * Returns the shortened url for the given original url.
+         * 
+         * @param {String} userId userId of the user
+         * @param {*} originalUrl the original url to shorten
+         * @returns the short url
+         */
         shortenURL: async(userId, originalUrl) => {
             const code = nanoid(10);
             try {
@@ -30,6 +37,13 @@ function urlService(repository) {
             }
         },
 
+        /**
+         * 
+         * Returns the original url for the given short url code.
+         * 
+         * @param {String} code 
+         * @returns the original url if the code is found, error otherwise
+         */
         redirect: async(code) => {
             try {
                 let url = await repository.getURL({ _id: code })
@@ -45,12 +59,17 @@ function urlService(repository) {
             }
         },
 
+        /**
+         * Returns a list of urls shortened by the user via the /shortenUrl endpoint.
+         * 
+         * @param {String} userId
+         * @returns the list of urls shortened by the user
+         */
         getHistory: async(userId) => {
             const data = await repository.getUrlsForUser(userId)
             return data.map(x => x.originalUrl)
         }
     }
-
     return functions
 }
 

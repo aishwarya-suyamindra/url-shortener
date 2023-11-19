@@ -1,8 +1,8 @@
-import authenticateToken from "../middleware/auth.js";
-import validateLimit from "../middleware/rateLimiter.js";
-import validateURL from "../middleware/urlValidator.js";
+// import authenticateToken from "../middleware/auth.js";
+// import validateLimit from "../middleware/rateLimiter.js";
+// import validateURL from "../middleware/urlValidator.js";
 
-function AppRoutes(app, userService, urlService) {
+function AppRoutes(app, userService, urlService, middleware) {
     app.get("/", (req, res) => {
         res.send("Im listening")
     })
@@ -16,7 +16,7 @@ function AppRoutes(app, userService, urlService) {
         })
     })
 
-    app.get('/history', authenticateToken, validateLimit, (req, res) => {
+    app.get('/history', middleware.authenticateToken, middleware.validateLimit, (req, res) => {
         urlService.getHistory(req.user.id).then((urls) => {
             res.status(200).send(urls)
         }).catch(error => {
@@ -33,7 +33,7 @@ function AppRoutes(app, userService, urlService) {
         })
     })
 
-    app.post('/shortenURL', authenticateToken, validateLimit, validateURL, (req, res) => {
+    app.post('/shortenURL', middleware.authenticateToken, middleware.validateLimit, middleware.validateURL, (req, res) => {
         urlService.shortenURL(req.user.id, req.body.url).then((shortUrl) => {
             res.status(200).send(shortUrl)
         }).catch(error => {
