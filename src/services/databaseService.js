@@ -1,5 +1,6 @@
 import Tier from "../models/tier.js";
 import User from "../models/userModel.js";
+import Url from "../models/urlModel.js";
 import mongoose from "mongoose";
 
 /**
@@ -46,7 +47,6 @@ const getTier = async(predicate) => {
  * @returns the user
  */
 const getUser = async(predicate) => {
-  // return await User.findOne(predicate).populate('usage')
   return await User.findOne(predicate)
 }
 
@@ -72,6 +72,56 @@ const findAndModifyUser = async(predicate, valuesToUpdate, upsert) => {
   return await User.findOneAndUpdate(predicate, {$set: valuesToUpdate})
 }
 
+/**
+ * Returns the URL filtered based on the predicate.
+ * 
+ * @param {Object} predicate 
+ * @returns the url
+ */
+const getURL = async(predicate) => {
+  return await Url.findOne(predicate)
+}
+
+/**
+ * Creates a URL document with the given data.
+ * 
+ * @param {obj} data 
+ * @returns document
+ */
+const createURLDocument = (data) => {
+  const {code, originalUrl, shortUrl, userId } = data
+  const doc = {
+    _id: code,
+    originalUrl: originalUrl,
+    shortUrl: shortUrl,
+    users: [userId]
+  }
+  return doc
+}
+
+/**
+ * Saves the given url object in the database.
+ * 
+ * @param {Url} the url document to save 
+ */
+const saveShortUrl = async(url) => {
+  return await Url.create(url)
+}
+
+/**
+ * Adds the given userId for the url, if not already present.
+ * 
+ * @param {String} userId 
+ * @param {String} code the unique code of the short url
+ * @returns 
+ */
+const addUserForUrl = async(userId, code) => {
+  return await Url.findByIdAndUpdate(code, {$addToSet: { users: userId }})//updateOne({_id: code}, { $add: { 'users': userId }})
+}
+
+const getUrlsForUser = async(userId) => {
+  return await Url.find({users: {$in: [userId]}})
+}
 
 // TODO: Remove, for testing purpose only
 /**
@@ -83,4 +133,4 @@ const createTier = async(tier) => {
   return await Tier.create(tier)
 }
 
-export {getTier, getTiers, getUser, findAndModifyUser, connect, createUser, createTier};
+export {getTier, getTiers, getUser, findAndModifyUser, connect, createUser, createTier, getURL, createURLDocument, saveShortUrl, addUserForUrl, getUrlsForUser};
