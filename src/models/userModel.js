@@ -14,7 +14,7 @@ const userSchema = new Schema({
     },
     tier: {
         type: String,
-        enum: ["Tier 1", "Tier 2", "Tier 3", "Tier 4"],
+        ref: 'Tier',
         required: true,
     },
     usage: {
@@ -28,10 +28,6 @@ const userSchema = new Schema({
 },
     { timestamps: true }
 );
-
-// userSchema.pre('findOne', function() {
-//     this.populate('usage');
-// });
 
 const User = model('User', userSchema);
 export default User;

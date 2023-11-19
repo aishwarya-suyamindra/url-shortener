@@ -1,23 +1,25 @@
-import {URL} from 'url';
+import { URL } from 'url';
 
 /**
  * Middleware to check if the original url is a valid url.
  */
-const validateURL = async(req, res, next) => {
+const validateURL = () => {
+  const validate = (url) => {
+    return new URL(url)
+  }
+
+  return async function (req, res, next) {
     const originalUrl = req.body.url
     if (!originalUrl) {
-      res.sendStatus(400).send("Provide the URL to shorten!")
+      res.status(400).send({status:"error", message: "Provide the URL to shorten!"})
     }
     try {
       validate(originalUrl)
       next();
-    } catch(error) {
-      res.sendStatus(400).json("Invalid URL!")
+    } catch (error) {
+      res.status(400).send({status:"error", message: "Invalid URL!"})
     }
   }
-
-const validate = (url) => {
-    return new URL(url)
 }
 
 export default validateURL
