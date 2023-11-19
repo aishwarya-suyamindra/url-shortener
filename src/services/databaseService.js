@@ -132,7 +132,7 @@ function database() {
     * @returns 
     */
     addUserForUrl: async (userId, code) => {
-      return await Url.findByIdAndUpdate(code, { $addToSet: { users: userId } })//updateOne({_id: code}, { $add: { 'users': userId }})
+      return await Url.findByIdAndUpdate(code, { $addToSet: { users: userId } })
     },
 
     /**

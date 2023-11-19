@@ -11,13 +11,13 @@ const validateURL = () => {
   return async function (req, res, next) {
     const originalUrl = req.body.url
     if (!originalUrl) {
-      res.status(400).send({status:"error", message: "Provide the URL to shorten!"})
+      res.status(400).send("Provide the URL to shorten!")
     }
     try {
       validate(originalUrl)
       next();
     } catch (error) {
-      res.status(400).send({status:"error", message: "Invalid URL!"})
+      res.status(400).send("Invalid URL!")
     }
   }
 }

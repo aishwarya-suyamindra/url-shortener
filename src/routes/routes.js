@@ -1,13 +1,9 @@
-// import authenticateToken from "../middleware/auth.js";
-// import validateLimit from "../middleware/rateLimiter.js";
-// import validateURL from "../middleware/urlValidator.js";
-
 function AppRoutes(app, userService, urlService, middleware) {
     app.get("/", (req, res) => {
         res.send("Im listening")
     })
 
-    app.post("/token", (req, res) => {
+    app.post("/token", middleware.validateEmail ,(req, res) => {
         const data = req.body
         userService.signUp(data.email).then(token => {
             res.status(200).send(token);

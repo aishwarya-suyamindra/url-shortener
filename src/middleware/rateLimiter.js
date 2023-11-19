@@ -73,7 +73,7 @@ const validateLimit = (repository) => {
       next();
     } catch (error) {
       // TODO: Add http headers
-      res.status(429).send({ message: "Too many requests. Please try again in some time or upgrade your tier." })
+      res.status(429).send("Too many requests. Please try again in some time or upgrade your tier.")
     }
   }
 }
