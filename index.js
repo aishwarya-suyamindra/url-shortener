@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import * as repository from "./src/services/databaseService.js";
 import AppRoutes from "./src/routes/routes.js";
+import userService from "./src/services/userService.js";
+import urlService from "./src/services/urlService.js";
 
 const app = express()
 app.use(express.json())
@@ -21,7 +23,7 @@ repository.connect(`${MONGO_URI}/${DB_NAME}`)
 //     limit: 5
 //   })
   
-AppRoutes(app)
+AppRoutes(app, userService(repository), urlService(repository))
 
 app.listen(PORT, () => {
     console.log(`Server is up on port ${PORT}`)

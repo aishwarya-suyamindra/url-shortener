@@ -43,11 +43,11 @@ const checkLimit = async function (userId) {
       }
       // Consume a token for the user
       const valueToUpdate = limit.tokenCount + 1
-      findAndModifyUser({ _id: user._id }, { 'usage.tokenCount' : valueToUpdate }, false)
+      await findAndModifyUser({ _id: user._id }, { 'usage.tokenCount' : valueToUpdate }, false)
     } else {
       // Else, reset request window based on current time
       let limit = setLimit(tier)
-      findAndModifyUser({ _id: user._id }, { 'usage': limit }, false)
+      await findAndModifyUser({ _id: user._id }, { 'usage': limit }, false)
     }
   }
 };

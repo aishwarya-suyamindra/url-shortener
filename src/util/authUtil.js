@@ -4,7 +4,7 @@ const createToken = (id, secret) => {
     return jwt.sign(
         { id },
         secret,
-        { expiresIn: "10m" }
+        { expiresIn: "30m" }
     )
 }
 

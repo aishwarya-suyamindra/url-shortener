@@ -20,7 +20,10 @@ const userSchema = new Schema({
     usage: {
         windowStart: Date,
         windowEnd: Date,
-        tokenCount: Number
+        tokenCount: {
+            type: Number,
+            default: 0
+        }
     }
 },
     { timestamps: true }
