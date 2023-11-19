@@ -7,6 +7,7 @@ import urlService from "./src/services/urlService.js";
 import authenticateToken from "./src/middleware/auth.js";
 import validateLimit from "./src/middleware/rateLimiter.js";
 import validateURL from "./src/middleware/urlValidator.js";
+import validateEmail from "./src/middleware/emailValidator.js";
 const app = express()
 app.use(express.json())
 
@@ -32,7 +33,8 @@ const urlServiceRef = urlService(repository)
 const middleware = {
     validateLimit: validateLimit(repository),
     validateURL: validateURL(),
-    authenticateToken: authenticateToken(userServiceRef)
+    authenticateToken: authenticateToken(userServiceRef),
+    validateEmail: validateEmail()
 }
 
 AppRoutes(app, userServiceRef, urlServiceRef, middleware)
