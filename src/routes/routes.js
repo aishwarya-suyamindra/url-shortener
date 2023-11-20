@@ -153,6 +153,55 @@ function AppRoutes(app, userService, urlService, middleware) {
             res.status(500).send(error.message)
         })
     })
+
+     /**
+    * @swagger
+    * /upgradeTier:
+    *   post:
+    *     summary: Upgrade the user to a specific tier.
+    *     security: [
+    *       bearerAuth: []
+    *     ]
+    *     requestBody:
+    *       required: true
+    *       content:
+    *         application/json:
+    *           schema:
+    *               properties:
+    *                    tier:
+    *                        type: string
+    *                        example: "Tier 3" 
+    *     responses:
+    *       200:
+    *         content:
+    *           application/json:
+    *            schema:
+    *               type: string
+    *               example: "Successfully upgraded" 
+    *       403:
+    *         description: Forbidden
+    *         content:
+    *           application/json:
+    *            schema:
+    *               type: String
+    *               example: Please register first!
+    *       429:
+    *         description: Too many requests from the user
+    *         content:
+    *           application/json:
+    *            schema:
+    *               type: String
+    *               example: Too many requests. Please try again in some time or upgrade your tier.
+    *       
+    *
+    */
+    app.post('/upgradeTier', middleware.authenticateToken,  middleware.validateTier, (req, res) => {
+        userService.upgradeTier(req.user.id, req.body.tier).then(() => {
+            res.status(200).send("Upgraded successfully.")
+        }).catch(error => {
+            res.status(500).send(error.message)
+        })
+    })
 }
 
 export default AppRoutes;

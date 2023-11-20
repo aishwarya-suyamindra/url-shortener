@@ -8,6 +8,7 @@ import authenticateToken from "./src/middleware/auth.js";
 import validateLimit from "./src/middleware/rateLimiter.js";
 import validateURL from "./src/middleware/urlValidator.js";
 import validateEmail from "./src/middleware/emailValidator.js";
+import validateTier from "./src/middleware/tierValidator.js"
 import swaggerJSDoc from "swagger-jsdoc";
 import * as swaggerUi from "swagger-ui-express";
 
@@ -56,7 +57,8 @@ const middleware = {
     validateLimit: validateLimit,
     validateURL: validateURL,
     authenticateToken: authenticateToken,
-    validateEmail: validateEmail
+    validateEmail: validateEmail,
+    validateTier: validateTier
 }
 AppRoutes(app, userService, urlService, middleware)
 
