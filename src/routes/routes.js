@@ -11,7 +11,8 @@
 
 function AppRoutes(app, userService, urlService, middleware) {
     app.get("/", (req, res) => {
-        res.send("Up and listening!")
+        const response = "Hello there, server is up! Please visit " + `${process.env.BASE_URL}/docs` + " to view the documentation."
+        res.send(response)
     })
 
     /**
