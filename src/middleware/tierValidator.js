@@ -9,7 +9,7 @@ const validateTier = async (req, res, next) => {
     const tier = req.body.tier
     const upgradeToTier = await database.getTier({ name: tier })
     if (!upgradeToTier) {
-        res.status(400).send("Invalid tier. Please specify one of - " + validTiers.map((x) => x._doc.name).join(", "))
+        return res.status(400).send("Invalid tier. Please specify one of - " + validTiers.map((x) => x._doc.name).join(", "))
     }
     next();
 }
