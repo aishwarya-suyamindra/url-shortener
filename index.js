@@ -11,6 +11,7 @@ import validateEmail from "./src/middleware/emailValidator.js";
 import validateTier from "./src/middleware/tierValidator.js"
 import swaggerJSDoc from "swagger-jsdoc";
 import * as swaggerUi from "swagger-ui-express";
+import insertData from "./insert.js";
 
 const app = express()
 app.use(express.json())
@@ -20,7 +21,7 @@ const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
 // connect to the MongoDB database
-connect(`${MONGO_URI}`)
+await connect(`${MONGO_URI}`)
 
 // configure swagger
 const options = {
@@ -52,6 +53,13 @@ app.use(
     swaggerUi.setup(specs)
 );
 
+// if the --insert-data flag argument is passed when the app is run, insert default data to the database
+// the argument is not specified by default
+const args = process.argv.slice(2)
+if (args[0] === "--insert-data") {
+    console.log("Insert default data")
+    await insertData()
+}
 
 const middleware = {
     validateLimit: validateLimit,
