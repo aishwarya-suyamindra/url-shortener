@@ -61,7 +61,7 @@ const checkLimit = async function (userId) {
     // If the request is made within a valid request window, validate the number of tokens left based on the user tier
     if (isValidRequestWindow(limit.windowStart, limit.windowEnd)) {
       // if there are no tokens left then the rate limit has been reached
-      if (limit.tokenCount > tier.limit) {
+      if (limit.tokenCount >= tier.limit) {
         throw new Error('Too Many Requests');
       }
       // Consume a token for the user
