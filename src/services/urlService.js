@@ -1,35 +1,33 @@
 import { nanoid } from 'nanoid';
+import database from "../services/databaseService.js"
 
 /**
  * 
  * Helper functions to shorten and work with shortened urls.
- * 
- * @param {} repository the repository layer to use
- * @returns
  */
-function urlService(repository) {
-    const baseURL = process.env.BASE_URL
+function urlService() {
     const functions = {
         /**
          * Returns the shortened url for the given original url.
          * 
          * @param {String} userId userId of the user
-         * @param {*} originalUrl the original url to shorten
+         * @param {String} originalUrl the original url to shorten
          * @returns the short url
          */
         shortenURL: async(userId, originalUrl) => {
+            const baseURL = process.env.BASE_URL
             const code = nanoid(10);
             try {
                 // validate if the original URL has already been shortened, return the shortened one if it has been
-                let url = await repository.getURL({ originalUrl: originalUrl })
+                let url = await database.getURL({ originalUrl: originalUrl })
                 if (url) {
-                    await repository.addUserForUrl(userId, url._id)
+                    await database.addUserForUrl(userId, url._id)
                     return url.shortUrl
                 }
                 const shortUrl = `${baseURL}/${code}`
                 // save
-                const urlDoc = repository.createURLDocument({ code, originalUrl, shortUrl, userId })
-                await repository.saveShortUrl(urlDoc)
+                const urlDoc = database.createURLDocument({ code, originalUrl, shortUrl, userId })
+                await database.saveShortUrl(urlDoc)
                 return urlDoc.shortUrl
             } catch (error) {
                 console.log(error);
@@ -46,7 +44,7 @@ function urlService(repository) {
          */
         redirect: async(code) => {
             try {
-                let url = await repository.getURL({ _id: code })
+                let url = await database.getURL({ _id: code })
                 if (url) {
                     return url.originalUrl
                 } else {
@@ -66,11 +64,11 @@ function urlService(repository) {
          * @returns the list of urls shortened by the user
          */
         getHistory: async(userId) => {
-            const data = await repository.getUrlsForUser(userId)
+            const data = await database.getUrlsForUser(userId)
             return data.map(x => x.originalUrl)
         }
     }
     return functions
 }
 
-export default urlService;
+export default urlService();
