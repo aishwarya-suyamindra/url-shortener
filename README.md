@@ -9,7 +9,30 @@ A tier based application built with Node.js, Express and MongoDB to shorten a gi
 
 ## Overview
 The application allows a user to register, shorten long urls, view the history of original urls that are shortened and upgrade their tier. 
-There are 4 tiers - `Tier 1`, `Tier 2`, `Tier 3`, `Tier 4`. When a new user registers, the user is added to `Tier 4` by default.
+There are 4 tiers - `Tier 1`, `Tier 2`, `Tier 3`, `Tier 4`, with `Tier 1` being the highest.
+Each of these tiers have a different number of requests that can be made, within different time frames.
+  - Tier 1
+    ```
+    windowPeriod: 300
+    numberOfRequests: 50
+    ```
+  - Tier 2
+    ```
+    windowPeriod: 200
+    numberOfRequests: 20
+    ```
+  - Tier 3
+    ```
+    windowPeriod: 150
+    numberOfRequests: 15
+    ```
+  - Tier 4
+    ```
+    windowPeriod: 100
+    numberOfRequests: 5
+    ```
+    
+When a new user registers, the user is added to `Tier 4` by default.
 
 Overview of the endpoints:
 1. /token -  This endpoint returns a token that can be used for the rest of the services. This registers the user. When the token of a registered users expires, the same endpoint can be used to generate a new token.
