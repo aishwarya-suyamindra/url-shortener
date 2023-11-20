@@ -50,6 +50,7 @@ To use the application locally, follow these steps:
 
     ```bash
     git clone https://github.com/aishwarya-suyamindra/url-shortener.git
+    cd url-shortener
     ```
 
 2. **Install dependencies:**
