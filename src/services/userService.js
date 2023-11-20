@@ -39,7 +39,7 @@ const userService = () => {
                         windowStart: date,
                         windowEnd: new Date(new Date(date).setSeconds(date.getSeconds() + tier._doc.windowPeriodInSeconds))
                     }
-                    const userDoc = database.createUserDocument({ id, email,tierID, usage})
+                    const userDoc = database.createUserDocument({ id, email, tierID, usage })
                     user = await database.saveUser(userDoc)
                 }
                 const userId = user._doc._id
@@ -48,6 +48,21 @@ const userService = () => {
             } catch (error) {
                 throw new Error(error);
             }
+        },
+
+        upgradeTier: async (userId, tier) => {
+            const user = await database.getUser({ _id: userId })
+            const userTier = await database.getTier({ name: tier })
+            if (!userTier) {
+                throw new Error("Not a valid tier. Please specify one of 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4'")
+            }
+            const winStart = new Date()
+            const limit = {
+                windowStart: winStart,
+                windowEnd: new Date(new Date(winStart).setSeconds(winStart.getSeconds() + userTier.windowPeriodInSeconds)),
+                tokenCount: 0
+            }
+            await database.findAndModifyUser({ _id: user._id }, { 'usage': limit, 'tier': userTier._id}, false)
         }
     }
     return functions

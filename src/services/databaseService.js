@@ -120,6 +120,7 @@ function database() {
       return doc
     },
     
+    
     /**
     * Saves the given url object in the database.
     * 
@@ -148,6 +149,13 @@ function database() {
      */
     getUrlsForUser: async (userId) => {
       return await Url.find({ users: { $in: [userId] } })
+    },
+
+    /**
+     * Returns the current tiers
+     */
+    getAllTiers: async() => {
+      return await Tier.find()
     }
   }
   return functions

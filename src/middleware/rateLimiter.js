@@ -10,7 +10,7 @@ import database from "../services/databaseService.js"
 const validateLimit = async (req, res, next) => {
   const userId = req.user.id
   if (!userId) {
-    throw new Error("User Id not available!")
+    res.status(403).send("Forbidden")
   }
   try {
     await checkLimit(userId)
