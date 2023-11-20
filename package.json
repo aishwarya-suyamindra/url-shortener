@@ -9,7 +9,8 @@
     "test": "npm-run-all --aggregate-output cov:clean -p cov:unit -s cov:summary-preset cov:report",
     "test:unit": "npx jest",
     "cov:clean": "rimraf .nyc_output && rimraf coverage",
-    "cov:unit": "jest --forceExit --colors -c jest.config.unit.js"
+    "cov:unit": "jest --forceExit --colors -c jest.config.unit.js",
+    "start": "node index.js"
   },
   "author": "Aishwarya Suyamindra",
   "license": "ISC",

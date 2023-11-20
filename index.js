@@ -15,10 +15,9 @@ app.use(express.json())
 const config = dotenv.config();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
-const DB_NAME = process.env.DB_NAME;
 
 // connect to the MongoDB database
-connect(`${MONGO_URI}/${DB_NAME}`) 
+connect(`${MONGO_URI}`) 
 
 const middleware = {
     validateLimit: validateLimit,
