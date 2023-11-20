@@ -1,6 +1,6 @@
 function AppRoutes(app, userService, urlService, middleware) {
     app.get("/", (req, res) => {
-        res.send("Im listening")
+        res.send("Up and listening!")
     })
 
     app.post("/token", middleware.validateEmail ,(req, res) => {
@@ -8,7 +8,7 @@ function AppRoutes(app, userService, urlService, middleware) {
         userService.signUp(data.email).then(token => {
             res.status(200).send(token);
         }).catch(error => {
-            res.status(500).send(error.message)
+            res.status(500).send(error)
         })
     })
 

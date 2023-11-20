@@ -1,13 +1,11 @@
 import createToken from "../util/authUtil.js"
 import { v4 as uuidv4 } from 'uuid';
+import database from "../services/databaseService.js"
 
 /**
  * Helper functions to register the user.
- * 
- * @param {} repository the repository layer to use
- * @returns 
  */
-const userService = (repository) => {
+const userService = () => {
     const functions = {
         /**
          * Validates if the user is a registered user.
@@ -16,7 +14,7 @@ const userService = (repository) => {
          * @returns true if the user is registered, false otherwise
          */
         isRegisteredUser: async (userId) => {
-            const user = await repository.getUser({ _id: userId })
+            const user = await database.getUser({ _id: userId })
             return user ? true : false
         },
 
@@ -29,11 +27,11 @@ const userService = (repository) => {
         */
         signUp: async (email) => {
             try {
-                var user = await repository.getUser({ email: email })
+                var user = await database.getUser({ email: email })
                 if (!user) {
                     // A new user is registered under tier 4 by default
                     // TODO: Make the tier configurable
-                    const tier = await repository.getTier({ name: "Tier 4" })
+                    const tier = await database.getTier({ name: "Tier 4" })
                     const tierID = tier._id
                     const date = new Date()
                     const id = uuidv4()
@@ -41,8 +39,8 @@ const userService = (repository) => {
                         windowStart: date,
                         windowEnd: new Date(new Date(date).setSeconds(date.getSeconds() + tier._doc.windowPeriodInSeconds))
                     }
-                    const userDoc = repository.createUserDocument({ id, email,tierID, usage})
-                    user = await repository.saveUser(userDoc)
+                    const userDoc = database.createUserDocument({ id, email,tierID, usage})
+                    user = await database.saveUser(userDoc)
                 }
                 const userId = user._doc._id
                 const token = createToken(userId, process.env.TOKEN_SECRET)
@@ -55,4 +53,4 @@ const userService = (repository) => {
     return functions
 }
 
-export default userService;
+export default userService();

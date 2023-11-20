@@ -9,7 +9,7 @@ import mongoose from "mongoose";
  * 
  * @param {String} MONGO_URI The database url to connect to
  */
-const connect = async (MONGO_URI) => {
+export const connect = async (MONGO_URI) => {
   try {
     await mongoose.connect(MONGO_URI);
     console.log('Connected to MongoDB');
@@ -17,6 +17,11 @@ const connect = async (MONGO_URI) => {
     console.error('Error connecting to the database', error.message);
   }
 };
+
+/**
+ * 
+ * @returns Helper functions to work with the database.
+ */
 
 function database() {
   const functions = {
@@ -148,14 +153,4 @@ function database() {
   return functions
 }
 
-// TODO: Remove, for testing purpose only
-/**
- * Saves the given tier object in the database.
- * 
- * @param {User} user 
- */
-const createTier = async (tier) => {
-  return await Tier.create(tier)
-}
-
-export { connect, database }
+export default database()
