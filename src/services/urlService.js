@@ -1,4 +1,5 @@
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
+import shortid from "shortid";
 import database from "../services/databaseService.js"
 
 /**
@@ -16,7 +17,7 @@ function urlService() {
          */
         shortenURL: async(userId, originalUrl) => {
             const baseURL = process.env.BASE_URL
-            const code = nanoid(10);
+            const code = shortid.generate()
             try {
                 // validate if the original URL has already been shortened, return the shortened one if it has been
                 let url = await database.getURL({ originalUrl: originalUrl })
