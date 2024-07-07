@@ -21,7 +21,7 @@ const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
 // connect to the MongoDB database
-await connect(`${MONGO_URI}`)
+await connect(`${MONGO_URI}`).catch(err => console.error('Error connecting to MongoDB', err));
 
 // configure swagger
 const options = {
