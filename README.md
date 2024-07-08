@@ -70,9 +70,29 @@ To use the application locally, follow these steps:
     npm start
     ```
 
+Alternatively, it can be installed via Docker.
+
+1. **Build the docker image:**
+
+    ```bash
+   docker build -t <image-name> .
+    ```
+
+2. **Run the container with the image**
+
+    ```bash
+    docker run --rm -it -p 4500:4500 <image-name>
+    ```
+
 The Node.js application should be running on [http://localhost:4500](http://localhost:4500).
 
 To insert default data to the application or to reset the tiers and users, run the application with the `--insert-data` argument.
+
+3. **Run the container with the image with the argument**
+
+    ```bash
+    docker run --rm -it -p 4500:4500 <image-name> --insert-data
+    ```
 
 ## Usage
 To use the endpoints, please register first. This can be done by using the /token endpoint and providing an email address.
