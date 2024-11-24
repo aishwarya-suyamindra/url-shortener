@@ -12,6 +12,7 @@ import validateTier from "./src/middleware/tierValidator.js"
 import swaggerJSDoc from "swagger-jsdoc";
 import * as swaggerUi from "swagger-ui-express";
 import insertData from "./insert.js";
+import { connectClients } from "./src/services/cacheClient.js";
 
 const app = express()
 app.use(express.json())
@@ -20,8 +21,13 @@ const config = dotenv.config()
 const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
+console.log(process.env.BASE_URL)
+
 // connect to the MongoDB database
 await connect(`${MONGO_URI}`).catch(err => console.error('Error connecting to MongoDB', err));
+
+// connect to the Redis clients
+await connectClients().catch(err => console.error('Error connecting to Redis clients', err));
 
 // configure swagger
 const options = {

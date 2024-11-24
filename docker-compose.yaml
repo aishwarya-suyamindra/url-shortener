@@ -1,0 +1,33 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: node_app
+    ports:
+      - "${PORT}:4500"
+    depends_on:
+      - redis1
+      - redis2
+    environment:
+      - REDIS_HOST_1=${REDIS_HOST_1}
+      - REDIS_PORT_1=${REDIS_PORT_1}
+      - REDIS_HOST_2=${REDIS_HOST_2}
+      - REDIS_PORT_2=${REDIS_PORT_2}
+      - PORT=${PORT}
+      - BASE_URL=${BASE_URL}
+      - MONGO_URI=${MONGO_URI}
+      - TOKEN_SECRET=${TOKEN_SECRET}
+
+  redis1:
+    image: redis:7
+    container_name: redis1
+    ports:
+      - "${REDIS_PORT_1}:6379"
+    command: ["redis-server", "--port", "${REDIS_PORT_1}", "--bind", "0.0.0.0"]
+
+  redis2:
+    image: redis:7
+    container_name: redis2
+    ports:
+      - "${REDIS_PORT_2}:6379"
+    command: ["redis-server", "--port", "${REDIS_PORT_2}", "--bind", "0.0.0.0"]

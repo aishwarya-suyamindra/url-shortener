@@ -4,3 +4,5 @@ node_modules
 .git
 npm-debug.log
 README.md
+.env
+docker-compose.yaml

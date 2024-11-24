@@ -1,6 +1,7 @@
 // import { nanoid } from 'nanoid';
 import shortid from "shortid";
 import database from "../services/databaseService.js"
+import redisClient from "../services/cacheClient.js"
 
 /**
  * 
@@ -19,16 +20,19 @@ function urlService() {
             const baseURL = process.env.BASE_URL
             const code = shortid.generate()
             try {
-                // validate if the original URL has already been shortened, return the shortened one if it has been
+                // validate if the original URL has already been shortened, return the shortened one if it has been 
                 let url = await database.getURL({ originalUrl: originalUrl })
                 if (url) {
                     await database.addUserForUrl(userId, url._id)
                     return url.shortUrl
                 }
                 const shortUrl = `${baseURL}/${code}`
+
                 // save
                 const urlDoc = database.createURLDocument({ code, originalUrl, shortUrl, userId })
                 await database.saveShortUrl(urlDoc)
+                // add it to the cache with TTL of 1 hour
+                redisClient.set(code, originalUrl, 'EX', 3600)
                 return urlDoc.shortUrl
             } catch (error) {
                 console.log(error);
@@ -45,8 +49,17 @@ function urlService() {
          */
         redirect: async(code) => {
             try {
+                // validate if the url is in the cache
+                let original_url = redisClient.get(code)
+                if (original_url) {
+                    return original_url
+                }
+
+                // cache miss, so fetch it from the database
                 let url = await database.getURL({ _id: code })
                 if (url) {
+                    // add it to the cache
+                    redisClient.set(code, url.originalUrl, 'EX', ttl || 3600)
                     return url.originalUrl
                 } else {
                     console.log(error);
